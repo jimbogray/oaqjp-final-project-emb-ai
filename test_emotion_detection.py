@@ -4,13 +4,18 @@ from EmotionDetection import emotion_detection
 
 class TestStringMethods(unittest.TestCase):
 
-    def get_dominant_emotion():
+    def get_dominant_emotion(self, input):
+        res = emotion_detection.emotion_detector(input)
+        res = json.loads(res)
+        return res["dominant_emotion"]
         
     def test1(self):
-        res = emotion_detection.emotion_detector("I am glad this happened")
-        res = json.loads(res)
 
-        self.assertEqual(res["dominant_emotion"], "joy")
+        tests = [ {"input" : "I am glad this happened", "expected" : "joy"} ]
+
+        for test in tests:
+            emotion = self.get_dominant_emotion(test["input"])
+            self.assertEqual(test["expected"], emotion)
 
 
 if __name__ == '__main__':
