@@ -9,10 +9,24 @@ def emotion_detector(text_to_analyze):
     data = { "raw_document": { "text": text_to_analyze } }
 
     response = requests.post(WATSON_URL, headers=WATSON_HEADERS, json=data)
-
     response = json.loads(response.text)
 
-    return response['emotionPredictions'][0]['emotionMentions'][0]['span']['text']
+    emotions = response['emotionPredictions'][0]['emotion']
+
+    s = "{"
+    dominant_emotion = ""
+    dominant_emotion_value = 0
+
+    for k, v in emotions.items():
+        s += f'"{k}": {v},'
+        if v > dominant_emotion_value:
+            dominant_emotion = k
+            dominant_emotion_value = v
+
+    s += f'"dominant_emotion": "{dominant_emotion}"'
+    s += "}"
+
+    return s
 
 def main():
     print( emotion_detector("i love cheese and bread, my son") )
